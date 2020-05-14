@@ -1,4 +1,4 @@
-# @ecpark/vue-copy
+# v-directives
 
 基于 vue 的自定义指令集合，包含
 
