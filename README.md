@@ -6,5 +6,6 @@
 * 长按指令 v-longpressy,
 * 输入框禁止表情及特殊字符 v-emoji,
 * 输入框防抖指令 v-debounce
+* 实现页面水印 v-waterMarker
 
 
