@@ -7,5 +7,6 @@
 * 输入框禁止表情及特殊字符 v-emoji,
 * 输入框防抖指令 v-debounce
 * 实现页面水印 v-waterMarker
+* 拖拽指令 v-draggable
 
 
