@@ -4,6 +4,7 @@ import longpress from './longpress'
 import debounce from './debounce'
 import waterMarker from './waterMarker'
 import draggable from './draggable'
+import color from './color'
 // 自定义指令
 const directives = {
   copy,
@@ -11,7 +12,8 @@ const directives = {
   longpress,
   debounce,
   waterMarker,
-  draggable
+  draggable,
+  color
 }
 // 这种写法可以批量注册指令
 export default {

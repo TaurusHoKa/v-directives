@@ -8,5 +8,6 @@
 * 输入框防抖指令 v-debounce
 * 实现页面水印 v-waterMarker
 * 拖拽指令 v-draggable
+* 字体颜色变化指令 v-color
 
 
