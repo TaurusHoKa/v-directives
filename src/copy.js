@@ -8,7 +8,7 @@ const vCopy = { // 名字爱取啥取啥
     el.$value = value // 用一个全局属性来存传进来的值，因为这个值在别的钩子函数里还会用到
     el.handler = () => {
       if (!el.$value) {
-        // 值为空的时候，给出提示，我这里的提示是用的 ant-design-vue 的提示，你们随意
+        // 值为空的时候，给出提示。可根据项目UI仔细设计
         alert('无复制内容')
         return
       }
