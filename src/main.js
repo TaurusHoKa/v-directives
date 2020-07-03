@@ -5,6 +5,7 @@ import debounce from './debounce'
 import waterMarker from './waterMarker'
 import draggable from './draggable'
 import color from './color'
+import LazyLoad from './lazyLoad'
 // 自定义指令
 const directives = {
   copy,
@@ -13,7 +14,8 @@ const directives = {
   debounce,
   waterMarker,
   draggable,
-  color
+  color,
+  LazyLoad
 }
 // 这种写法可以批量注册指令
 export default {

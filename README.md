@@ -9,5 +9,6 @@
 * 实现页面水印 v-waterMarker
 * 拖拽指令 v-draggable
 * 字体颜色变化指令 v-color
+* 图片懒加载 v-LazyLoad
 
 
