@@ -10,7 +10,7 @@ const trigger = (el, type) => {
   el.dispatchEvent(e)
 }
 
-const vEmoji = {
+const emoji = {
   bind: function (el, binding, vnode) {
     var regRule = /[^\u4E00-\u9FA5|\d|\a-zA-Z|\r\n\s,.?!，。？！…—&$=()-+/*{}[\]]|\s/g
     let $inp = findEle(el, 'input')
@@ -28,4 +28,4 @@ const vEmoji = {
   }
 }
 
-export default vEmoji
+export default emoji

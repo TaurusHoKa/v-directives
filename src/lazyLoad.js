@@ -84,6 +84,5 @@ const LazyLoad = {
   }
 
 }
-// https://juejin.im/post/5ef0aa5c6fb9a0586320ac04
 
 export default LazyLoad;
