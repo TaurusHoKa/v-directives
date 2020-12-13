@@ -2,31 +2,31 @@
 
 基于 vue 的自定义指令集合，包含
 
-- 赋值粘贴 v-copy
-- 长按指令 v-longpressy,
-- 输入框禁止表情及特殊字符 v-emoji,
+- 复制粘贴指令 v-copy
+- 长按指令 v-longpress
 - 输入框防抖指令 v-debounce
+- 禁止表情及特殊字符 v-emoji
+- 图片懒加载 v-LazyLoad
+- 权限校验指令 v-premission
 - 实现页面水印 v-waterMarker
 - 拖拽指令 v-draggable
-- 字体颜色变化指令 v-color
-- 图片懒加载 v-LazyLoad
 
 ## v-copy
 
-需求：实现一键复制文本内容，由于鼠标右键黏贴。
+需求：实现一键复制文本内容，用于鼠标右键粘贴。
 
 思路：
 
-1. 动态创建 textarea 标签，并将 textarea 设置 readOnly 属性和移出可视区域
+1. 动态创建 textarea 标签，并设置 readOnly 属性及移出可视区域
 2. 将要 copy 的值赋给 textarea 标签的 value 属性，并插入到 body
 3. 选中值 textarea 并复制
 4. 将 body 中插入的 textarea 移除
-5. 在第一次调用是绑定事件，在解绑时移除事件
+5. 在第一次调用时绑定事件，在解绑时移除事件
 
 ```js
 const copy = {
   bind(el, { value }) {
-    el.$value = value // 用一个全局属性来存传进来的值，因为这个值在别的钩子函数里还会用到
+    el.$value = value
     el.handler = () => {
       if (!el.$value) {
         // 值为空的时候，给出提示。可根据项目UI仔细设计
@@ -67,7 +67,7 @@ const copy = {
 export default copy
 ```
 
-使用
+使用：给 Dom 加上 v-copy 及复制的文本即可
 
 ```html
 <template>
@@ -149,7 +149,7 @@ const longpress = {
 export default longpress
 ```
 
-使用
+使用：给 Dom 加上 longpress 及回调函数即可
 
 ```html
 <template>
@@ -195,7 +195,7 @@ const debounce = {
 export default debounce
 ```
 
-使用
+使用：给 Dom 加上 v-debounce 及回调函数即可
 
 ```html
 <template>
@@ -214,11 +214,9 @@ export default {
 
 ## v-emoji
 
-背景：开发中遇到的表单输入，往往会有对输入内容的限制，比如不能输入表情，这能输入数字，正整数，非特殊符号等。如果我们每一个表单输入都做单独处理，这样代码量比较大而且不好维护，所以我们需要自定义一个指令来解决这问题。
+背景：开发中遇到的表单输入，往往会有对输入内容的限制，比如不能输入表情和特殊字符，只能输入数字或字母等。
 
-需求：根据正则表达式，设计自定义处理表单输入规则的指令，下面以禁止输入表情为例。
-
-常规方法都是在@chang 事件上做处理
+我们常规方法是在每一个表单的@change 事件上做处理。
 
 ```html
 <template>
@@ -237,7 +235,9 @@ export default {
 </script>
 ```
 
-下面封装一个 vue 指令
+这样代码量比较大而且不好维护，所以我们需要自定义一个指令来解决这问题。
+
+需求：根据正则表达式，设计自定义处理表单输入规则的指令，下面以禁止输入表情和特殊字符为例。
 
 ```js
 let findEle = (parent, type) => {
@@ -272,7 +272,7 @@ const emoji = {
 export default emoji
 ```
 
-使用
+使用：将需要校验的输入框加上 v-emoji 即可
 
 ```html
 <template>
@@ -289,8 +289,8 @@ export default emoji
 思路：
 
 1. 图片懒加载的原理主要是判断当前图片是否到了可视区域这一核心逻辑实现的
-2. 拿到所有的图片 dome ，遍历每个图片判断当前图片是否到了可视区范围内。
-3. 如果到了就设置图片的 src 属性。
+2. 拿到所有的图片 dome ，遍历每个图片判断当前图片是否到了可视区范围内
+3. 如果到了就设置图片的 src 属性，否则显示默认图片
 
 图片懒加载有两种方式可以实现，一是绑定 srcoll 事件进行监听，二是使用 IntersectionObserver 判断图片是否到了可视区域，但是有浏览器兼容性问题。
 
@@ -397,7 +397,7 @@ export default LazyLoad
 思路：
 
 1. 自定义一个权限数组
-2. 判断用户的权限是否在这个数组内，如果是，则显示，否则则移除 Dom。
+2. 判断用户的权限是否在这个数组内，如果是则显示，否则则移除 Dom
 
 ```js
 function checkArray(key) {
@@ -426,7 +426,7 @@ const permission = {
 export default permission
 ```
 
-使用
+使用：给 v-permission 赋值判断即可
 
 ```html
 <div class="btns">
@@ -435,4 +435,103 @@ export default permission
   <!-- 不显示 -->
   <button v-permission="'10'">权限按钮2</button>
 </div>
+```
+
+## vue-waterMarker
+
+需求：给整个页面添加背景水印
+
+思路：
+
+1. 使用 canvas 特性生成 base64 格式的图片文件，设置其字体大小，颜色等。
+2. 将其设置为背景图片，从而实现页面或组件水印效果
+
+```js
+function addWaterMarker(str, parentNode, font, textColor) {
+  // 水印文字，父元素，字体，文字颜色
+  var can = document.createElement('canvas')
+  parentNode.appendChild(can)
+  can.width = 200
+  can.height = 150
+  can.style.display = 'none'
+  var cans = can.getContext('2d')
+  cans.rotate((-20 * Math.PI) / 180)
+  cans.font = font || '16px Microsoft JhengHei'
+  cans.fillStyle = textColor || 'rgba(180, 180, 180, 0.3)'
+  cans.textAlign = 'left'
+  cans.textBaseline = 'Middle'
+  cans.fillText(str, can.width / 10, can.height / 2)
+  parentNode.style.backgroundImage = 'url(' + can.toDataURL('image/png') + ')'
+}
+
+const waterMarker = {
+  bind: function (el, binding) {
+    addWaterMarker(binding.value.text, el, binding.value.font, binding.value.textColor)
+  },
+}
+
+export default waterMarker
+```
+
+使用，设置水印文案，颜色，字体大小即可
+
+```html
+<template>
+  <div v-waterMarker="{text:'lzg版权所有',textColor:'rgba(180, 180, 180, 0.4)'}"></div>
+</template>
+```
+
+## v-draggable
+
+需求：实现一个拖拽指令，可在页面可视区域任意拖拽元素。
+
+思路：
+
+1. 设置需要拖拽的元素为相对定位，其父元素为绝对定位。
+2. 鼠标按下(onmousedown)时记录目标元素当前的 left 和 top 值。
+3. 鼠标移动(onmousemove)时计算每次移动的横向距离和纵向距离的变化值，并改变元素的 left 和 top 值
+4. 鼠标松开(onmouseup)时完成一次拖拽
+
+```js
+const draggable = {
+  inserted: function (el) {
+    el.style.cursor = 'move'
+    el.onmousedown = function (e) {
+      let disx = e.pageX - el.offsetLeft
+      let disy = e.pageY - el.offsetTop
+      document.onmousemove = function (e) {
+        let x = e.pageX - disx
+        let y = e.pageY - disy
+        let maxX = document.body.clientWidth - parseInt(window.getComputedStyle(el).width)
+        let maxY = document.body.clientHeight - parseInt(window.getComputedStyle(el).height)
+        if (x < 0) {
+          x = 0
+        } else if (x > maxX) {
+          x = maxX
+        }
+
+        if (y < 0) {
+          y = 0
+        } else if (y > maxY) {
+          y = maxY
+        }
+
+        el.style.left = x + 'px'
+        el.style.top = y + 'px'
+      }
+      document.onmouseup = function () {
+        document.onmousemove = document.onmouseup = null
+      }
+    }
+  },
+}
+export default draggable
+```
+
+使用: 在 Dom 上加上 v-draggable 即可
+
+```html
+<template>
+  <div class="el-dialog" v-draggable></div>
+</template>
 ```
