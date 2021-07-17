@@ -8,8 +8,12 @@
   "publishConfig": {
     "access": "public"
   },
+  "files": [
+    "dist/*.js"
+  ],
   "scripts": {
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [],
   "license": "ISC",
